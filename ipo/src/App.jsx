@@ -455,11 +455,11 @@ function InspecoesList() {
 function ClienteForm() {
 
 
-  const formData = {
+  const [formData, setFormData] = useState({
     nome: '',
     morada: '',
     nif: '',
-  };
+  });
 
   const navigate = useNavigate();
 
@@ -467,7 +467,7 @@ function ClienteForm() {
     e.preventDefault();
     try {
       const method = 'POST';
-      const url = `${API_BASE}/clientes.php`;
+      const url = `${API_BASE}/clientes`;
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -492,19 +492,19 @@ function ClienteForm() {
         <div className="row">
           <div className="form-group col-8">
             <label>Nome:</label>
-            <input className="form-control" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
+            <input type="text" className="form-control" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
           </div>
         </div>
 
         <div className="row">
           <div className="form-group col-6">
             <label>Morada</label>
-            <input className="form-control" value={formData.morada} onChange={(e) => setFormData({ ...formData, morada: e.target.value })} />
+            <input type="text" className="form-control" value={formData.morada} onChange={(e) => setFormData({ ...formData, morada: e.target.value })} />
           </div>
 
           <div className="form-group col-6">
             <label>NIF</label>
-            <input className="form-control" value={formData.nif} onChange={(e) => setFormData({ ...formData, nif: e.target.value })} />
+            <input type="text" className="form-control" value={formData.nif} onChange={(e) => setFormData({ ...formData, nif: e.target.value })} />
           </div>
         </div>
 
