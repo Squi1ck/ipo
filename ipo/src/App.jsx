@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 
-const API_BASE = 'https://effective-capybara-v665669654wghp5gj-3000.app.github.dev'
+const API_BASE = 'https://turbo-zebra-wrr4rrpr4wjrhg749-3000.app.github.dev';
 
 function App() {
   return (
@@ -55,10 +55,12 @@ function ClientesList() {
     setDeleteId(id);
     setShowDeleteModal(true);
   };
+
   const closeDeleteModal = () => {
     setDeleteId(null);
     setShowDeleteModal(false);
   };
+
   const confirmDelete = async (id) => {
     try {
       const response = await fetch(API_BASE + '/clientes/' + id, { method: 'DELETE' });
@@ -75,7 +77,6 @@ function ClientesList() {
       closeDeleteModal();
     }
   };
-
 
   const fetchData = async () => {
     try {
@@ -168,13 +169,21 @@ function ClientesList() {
   );
 }
 
-  function VeiculosList() {
+
+
+
+
+
+
+
+function VeiculosList() {
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [veiculos, setVeiculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mensagemErro, setMensagemErro] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -183,10 +192,12 @@ function ClientesList() {
     setDeleteId(id);
     setShowDeleteModal(true);
   };
+
   const closeDeleteModal = () => {
     setDeleteId(null);
     setShowDeleteModal(false);
   };
+
   const confirmDelete = async (id) => {
     try {
       const response = await fetch(API_BASE + '/veiculos/' + id, { method: 'DELETE' });
@@ -203,7 +214,6 @@ function ClientesList() {
       closeDeleteModal();
     }
   };
-
 
   const fetchData = async () => {
     try {
@@ -243,25 +253,28 @@ function ClientesList() {
       <table className="table table-striped">
         <thead>
           <tr>
+            <th>Codigo Veiculo</th>
             <th>Matrícula</th>
             <th>Data Livrete</th>
             <th>Ano Fabrico</th>
             <th>Nome do Cliente</th>
             <th>Marca</th>
+            <th>Opções</th>
           </tr>
         </thead>
         <tbody>
           {veiculos.map(veiculo => (
             <tr key={veiculo.codveiculo}>
+              <td>{veiculo.codveiculo}</td>
               <td>{veiculo.codmatricula}</td>
-              <td>{veiculo.data_livrete}</td>
-              <td>{veiculo.ano_fabrico}</td>
-              <td>{veiculo.nome_cliente}</td>
-              <td>{veiculo.marca}</td>
+              <td>{veiculo.datalivrete}</td>
+              <td>{veiculo.anofabrico}</td>
+              <td>{veiculo.cliente.nome}</td>
+              <td>{veiculo.marca.marca}</td>
               <td style={{ whiteSpace: 'nowrap' }}>
                 <button className="btn btn-dark btn-sm mr-2" ><i className='fa fa-eye' aria-hidden='true'></i></button>
                 <button className="btn btn-dark btn-sm mr-2" ><i className='fa fa-pencil' aria-hidden='true'></i></button>
-                <button className="btn btn-dark btn-sm" onClick={() => openDeleteModal(veiculo.codveic)}>
+                <button className="btn btn-dark btn-sm" onClick={() => openDeleteModal(veiculo.codveiculo)}>
                   <i className='fa fa-trash' aria-hidden='true'></i>
                 </button>
               </td>
@@ -295,8 +308,6 @@ function ClientesList() {
       )}
     </>
   );
-
-  return (<h2>Página de Veículos</h2>);
 }
 function InspecoesList() {
   return (<h2>Página de Inspeções</h2>);
