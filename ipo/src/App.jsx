@@ -21,6 +21,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/clientes" element={<ClientesList />} />
+
+          {/* Rotas do formulário de Clientes */}
+          <Route path="/clientes/create" element={<ClienteForm modo="create" />} />
+          <Route path="/clientes/update/:id" element={<ClienteForm modo="update" />} />
+          <Route path="/clientes/read/:id" element={<ClienteForm modo="read" />} />
+
           <Route path="/veiculos" element={<VeiculosList />} />
           <Route path="/inspecoes" element={<InspecoesList />} />
         </Routes>
@@ -40,6 +46,7 @@ function Inicio() {
     </div>
   );
 }
+
 function ClientesList() {
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -101,7 +108,9 @@ function ClientesList() {
           <h2>Clientes</h2>
         </div>
         <div className="col-6 text-right">
-          <button className="btn btn-dark ml-3" ><i className="fa fa-plus-square" aria-hidden="true"></i> Novo Cliente</button>
+          <Link to="/clientes/create" className="btn btn-dark">
+            <i className="fa fa-plus-square"></i> Novo Cliente
+          </Link>
           <button className="btn btn-light ml-3" onClick={fetchData}><i className="fa fa-refresh" aria-hidden="true"></i> Atualizar</button>
         </div>
       </div>
@@ -168,7 +177,6 @@ function ClientesList() {
     </>
   );
 }
-
 
 
 
@@ -312,7 +320,7 @@ function VeiculosList() {
 function InspecoesList() {
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [veiculos, setVeiculos] = useState([]);
+  const [inspecoes, setInspecoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mensagemErro, setMensagemErro] = useState(null);
   const navigate = useNavigate();
@@ -333,7 +341,7 @@ function InspecoesList() {
 
   const confirmDelete = async (id) => {
     try {
-      const response = await fetch(API_BASE + '/veiculos/' + id, { method: 'DELETE' });
+      const response = await fetch(API_BASE + '/inspecoes/' + id, { method: 'DELETE' });
       const data = await response.json();
       if (data.success) {
         fetchData();
@@ -341,7 +349,7 @@ function InspecoesList() {
         setMensagemErro(data.message);
       }
     } catch {
-      setMensagemErro('Erro ao eliminar veículo');
+      setMensagemErro('Erro ao eliminar inspeção');
     }
     finally {
       closeDeleteModal();
@@ -350,15 +358,15 @@ function InspecoesList() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(API_BASE + '/veiculos');
+      const response = await fetch(API_BASE + '/inspecoes');
       const data = await response.json();
       if (data.success) {
-        setVeiculos(data.data);
+        setInspecoes(data.data);
       } else {
         setMensagemErro(data.message);
       }
     } catch {
-      setMensagemErro('Erro ao carregar veículos');
+      setMensagemErro('Erro ao carregar inspeções');
     } finally {
       setLoading(false);
     }
@@ -368,10 +376,10 @@ function InspecoesList() {
     <>
       <div className="row">
         <div className="col-6">
-          <h2>Veículos</h2>
+          <h2>Página de Inspeções</h2>
         </div>
         <div className="col-6 text-right">
-          <button className="btn btn-dark ml-3" ><i className="fa fa-plus-square" aria-hidden="true"></i> Novo Veículo</button>
+          <button className="btn btn-dark ml-3" ><i className="fa fa-plus-square" aria-hidden="true"></i> Nova Inspeção</button>
           <button className="btn btn-light ml-3" onClick={fetchData}><i className="fa fa-refresh" aria-hidden="true"></i> Atualizar</button>
         </div>
       </div>
@@ -386,30 +394,31 @@ function InspecoesList() {
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>Codigo Veiculo</th>
-            <th>Matrícula</th>
-            <th>Data Livrete</th>
-            <th>Ano Fabrico</th>
-            <th>Nome do Cliente</th>
-            <th>Marca</th>
+            <th>Codigo Inspeção</th>
+            <th>Código Cliente</th>
+            <th>Código Matrícula</th>
+            <th>Código Inspetor</th>
+            <th>Data Inspeção</th>
+            <th>Número Faltas</th>
+            <th>Descrição Faltas</th>
+            <th>Aprovado</th>
             <th>Opções</th>
           </tr>
         </thead>
         <tbody>
-          {veiculos.map(veiculo => (
-            <tr key={veiculo.codveiculo}>
-              <td>{veiculo.codveiculo}</td>
-              <td>{veiculo.codmatricula}</td>
-              <td>{veiculo.datalivrete}</td>
-              <td>{veiculo.anofabrico}</td>
-              <td>{veiculo.cliente.nome}</td>
-              <td>{veiculo.marca.marca}</td>
+          {inspecoes.map(inspecao => (
+            <tr key={inspecao.codinspecao}>
+              <td>{inspecao.codinspecao}</td>
+              <td>{inspecao.codcli}</td>
+              <td>{inspecao.codmatricula}</td>
+              <td>{inspecao.codinspetor}</td>
+              <td>{inspecao.datainspecao}</td>
+              <td>{inspecao.numerofaltas}</td>
+              <td>{inspecao.descricaofaltas}</td>
+              <td>{inspecao.aprovado}</td>
               <td style={{ whiteSpace: 'nowrap' }}>
                 <button className="btn btn-dark btn-sm mr-2" ><i className='fa fa-eye' aria-hidden='true'></i></button>
                 <button className="btn btn-dark btn-sm mr-2" ><i className='fa fa-pencil' aria-hidden='true'></i></button>
-                <button className="btn btn-dark btn-sm" onClick={() => openDeleteModal(veiculo.codveiculo)}>
-                  <i className='fa fa-trash' aria-hidden='true'></i>
-                </button>
               </td>
             </tr>
           ))}
@@ -440,6 +449,69 @@ function InspecoesList() {
         </>
       )}
     </>
+  );
+}
+
+function ClienteForm() {
+
+
+  const formData = {
+    nome: '',
+    morada: '',
+    nif: '',
+  };
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = 'POST';
+      const url = `${API_BASE}/clientes.php`;
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (data.success) {
+        navigate('/clientes');
+      } else {
+        setMensagemErro(data.message);
+      }
+    } catch {
+      setMensagemErro('Erro ao guardar o cliente');
+    }
+  };
+
+  return (
+    <div>
+      <h2>Novo Cliente</h2>
+      <form onSubmit={handleSubmit}>
+
+        <div className="row">
+          <div className="form-group col-8">
+            <label>Nome:</label>
+            <input className="form-control" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="form-group col-6">
+            <label>Morada</label>
+            <input className="form-control" value={formData.morada} onChange={(e) => setFormData({ ...formData, morada: e.target.value })} />
+          </div>
+
+          <div className="form-group col-6">
+            <label>NIF</label>
+            <input className="form-control" value={formData.nif} onChange={(e) => setFormData({ ...formData, nif: e.target.value })} />
+          </div>
+        </div>
+
+        <button type="submit" className="btn btn-dark mr-2">Guardar</button>
+        <button type="button" className="btn btn-dark mr-2" onClick={() => navigate('/clientes')}>Cancelar</button>
+      </form>
+    </div>
   );
 }
 
